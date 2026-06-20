@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auténtico 1 – 1A Translation Challenge</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark:   #5fcf3a;
+    --green-mid:    #3ea81f;
+    --green-light:  #e8fbe2;
+    --green-accent: #4db82e;
+    --white:        #ffffff;
+    --off-white:    #f5fdf2;
+    --text-dark:    #1a3a0a;
+    --text-mid:     #2a4a15;
+    --amber:        #f0a500;
+    --amber-light:  #fff8e0;
+    --amber-text:   #a06000;
+
+    /* secondary accent — used sparingly for progress, score, achievement */
+    --gold:         #e8b923;
+    --gold-light:   #fdf3da;
+    --gold-dark:    #a8780c;
+
+    --red:          #cc3b3b;
+    --red-light:    #fdeceb;
+
+    /* refined, professional shadow system (cool dark-green tint) */
+    --shadow:       rgba(20,45,10,0.10);
+    --shadow-hover: rgba(20,45,10,0.20);
+    --shadow-lg:    0 20px 50px rgba(20,45,10,0.22);
+
+    --radius-sm:    16px;
+    --radius:       18px;
+    --radius-lg:    26px;
+
+    --font-heading: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
+  }
+
+  body {
+    position: relative;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    background: var(--off-white);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: 18px 16px 48px;
+  }
+
+  /* Very subtle geometric texture (~3% opacity) — purely decorative,
+     sits behind all content and never interferes with readability */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M32 4L60 32L32 60L4 32Z' fill='none' stroke='%233ea81f' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-size: 64px 64px;
+  }
+
+  /* ── HERO HEADER ── */
+  header {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--green-mid) 0%, var(--green-dark) 55%, var(--green-mid) 100%);
+    color: var(--white);
+    text-align: center;
+    padding: 38px 24px 32px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+  }
+  /* very low-opacity geometric overlay — professional, not distracting */
+  .hero-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.10;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 6L74 40L40 74L6 40Z' fill='none' stroke='%23ffffff' stroke-width='1.3'/%3E%3C/svg%3E");
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  .hero-kicker {
+    position: relative;
+    z-index: 1;
+    font-family: 'Poppins', var(--font-heading);
+    font-size: 1.56rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 8px;
+  }
+  header h1 {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 4.2vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    line-height: 1.18;
+  }
+  header p {
+    position: relative;
+    z-index: 1;
+    margin-top: 10px;
+    font-size: clamp(0.82rem, 2vw, 1rem);
+    color: var(--green-light);
+    font-weight: 400;
+  }
+
+  /* ── CONTAINER ── */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 16px 0;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    margin-bottom: 18px;
+  }
+  .progress-label {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .progress-track {
+    width: 100%;
+    height: 10px;
+    background: var(--green-light);
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px var(--shadow);
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--green-dark), var(--gold));
+    transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .stat-box {
+    background: var(--white);
+    border: 1.5px solid var(--green-light);
+    border-radius: var(--radius-sm);
+    padding: 10px 20px;
+    text-align: center;
+    box-shadow: 0 4px 14px var(--shadow);
+    min-width: 110px;
+  }
+  .stat-box--accent {
+    border-color: var(--gold-light);
+  }
+  .stat-box--accent .stat-value {
+    color: var(--gold-dark);
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--green-dark);
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1;
+  }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: var(--white);
+    border: 1.5px solid var(--green-light);
+    border-radius: var(--radius);
+    box-shadow: 0 6px 22px var(--shadow);
+    padding: 22px;
+    margin-bottom: 18px;
+  }
+
+  /* ── PROMPT (ENGLISH SENTENCE) CARD ── */
+  .prompt-card {
+    background: var(--green-light);
+    border: 1.5px solid var(--green-light);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 10px var(--shadow);
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .prompt-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--green-mid);
+    margin-bottom: 6px;
+  }
+  .prompt-text {
+    font-family: var(--font-heading);
+    font-size: clamp(1.05rem, 3vw, 1.35rem);
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.4;
+  }
+
+  /* ── ANSWER INPUT ── */
+  .answer-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+  }
+  .answer-input {
+    width: 100%;
+    font-family: inherit;
+    font-size: clamp(0.92rem, 2.2vw, 1.05rem);
+    font-weight: 600;
+    color: var(--text-dark);
+    background: var(--off-white);
+    border: 1.5px solid var(--green-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 1px 3px var(--shadow);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .answer-input:focus {
+    outline: none;
+    border-color: var(--green-dark);
+    box-shadow: 0 0 0 4px var(--shadow);
+  }
+  .answer-input:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  /* ── SPECIAL CHARACTER BANK ── */
+  .char-bank-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+  }
+  .char-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .char-btn {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    background: var(--white);
+    border: 1.5px solid var(--green-dark);
+    border-radius: var(--radius-sm);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 0 3px 10px var(--shadow);
+    transition: background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .char-btn:hover:not(:disabled) {
+    background: var(--green-dark);
+    color: var(--white);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px var(--shadow-hover);
+  }
+  .char-btn:active:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  .char-btn:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
+
+  /* ── FEEDBACK MESSAGE ── */
+  .feedback {
+    display: none;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: #d4f5c8;
+    color: var(--green-mid);
+    border: 1.5px solid var(--green-dark);
+    box-shadow: 0 4px 14px var(--shadow);
+    animation: feedbackPop 0.35s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+  @keyframes feedbackPop {
+    from { transform: scale(0.92); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+  .feedback-check {
+    display: inline-block;
+    color: var(--gold-dark);
+    margin-right: 4px;
+  }
+  .feedback.tryagain {
+    background: var(--white);
+    border: 1.5px solid var(--red-light);
+    border-left: 6px solid var(--red);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 14px var(--shadow);
+    text-align: left;
+    padding: 16px 18px;
+  }
+  .not-quite-heading {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .not-quite-text {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #000000;
+    line-height: 1.5;
+  }
+  .feedback.reveal {
+    background: var(--white);
+    border: 1.5px solid var(--green-light);
+    border-left: 6px solid var(--green-dark);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 14px var(--shadow);
+    text-align: left;
+    padding: 16px 18px;
+  }
+  .model-answer-heading {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+  }
+  .model-answer-text {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+  .model-answer-note {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-mid);
+    line-height: 1.4;
+  }
+  .feedback.incomplete {
+    background: var(--green-light);
+    color: var(--text-mid);
+    border: 1.5px solid var(--green-light);
+  }
+  .feedback strong { color: var(--text-dark); }
+
+  /* ── BUTTON ROW ── */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding: 10px 24px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--green-dark);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.1s, box-shadow 0.15s;
+    outline-offset: 3px;
+  }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px var(--shadow-hover); }
+  .btn:focus-visible { outline: 3px solid var(--green-accent); }
+  .btn:disabled { opacity: 0.45; cursor: default; transform: none; box-shadow: none; }
+  .btn-primary   { background: var(--green-dark); color: var(--white); }
+  .btn-primary:hover:not(:disabled) { background: var(--green-mid); }
+  .btn-secondary { background: var(--white); color: var(--green-dark); }
+  .btn-secondary:hover:not(:disabled) { background: var(--green-light); }
+
+  /* ── COMPLETION MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.48);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.visible { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 40px 36px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.22);
+    animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes modalPop {
+    from { transform: scale(0.8); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  .modal-emoji  { font-size: 3rem; margin-bottom: 10px; }
+  .modal-title  {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--gold-dark);
+    margin-bottom: 6px;
+  }
+  .modal-subtitle { font-size: 1rem; color: var(--text-mid); margin-bottom: 24px; line-height: 1.5; }
+
+  .modal-stats {
+    background: var(--gold-light);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+  .modal-stat-label {
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--gold-dark); margin-bottom: 4px;
+  }
+  .modal-stat-value { font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--gold-dark); }
+
+  .modal-btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .no-select { user-select: none; }
+</style>
+</head>
+<body>
+
+<header role="banner">
+  <div class="hero-pattern" aria-hidden="true"></div>
+  <div class="hero-kicker">Auténtico 1 &middot; Capítulo 1A</div>
+  <h1>Translation Challenge</h1>
+  <p>Read the English sentence, then type the Spanish translation</p>
+</header>
+
+<main class="container" role="main">
+
+  <div class="stats-bar" role="region" aria-label="Activity progress">
+    <div class="stat-box">
+      <div class="stat-label">Question</div>
+      <div class="stat-value" id="stat-question">1 / 15</div>
+    </div>
+    <div class="stat-box stat-box--accent">
+      <div class="stat-label">Score</div>
+      <div class="stat-value" id="stat-score">0 / 15</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-label">Attempts Remaining</div>
+      <div class="stat-value" id="stat-attempts">3</div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-label" id="progress-label">Question 1 of 15</div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <div class="prompt-card">
+      <div class="prompt-label">English</div>
+      <div class="prompt-text" id="prompt-text"></div>
+    </div>
+
+    <div class="answer-label">Type the Spanish translation</div>
+    <input
+      type="text"
+      class="answer-input"
+      id="answer-input"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      placeholder="Escribe la traducción en español&hellip;">
+
+    <div class="char-bank-label">Special Characters &mdash; click to insert at the cursor</div>
+    <div class="char-bank no-select" id="char-bank"></div>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary"   id="btn-check">Check Answer</button>
+    <button class="btn btn-secondary" id="btn-tryagain">↺ Try Again</button>
+    <button class="btn btn-secondary" id="btn-next" disabled>Next Question →</button>
+  </div>
+
+</main>
+
+<!-- COMPLETION MODAL -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <div class="modal-emoji" aria-hidden="true">🎉</div>
+    <div class="modal-title" id="modal-title">¡Excelente!</div>
+    <div class="modal-subtitle">You completed the Translation Challenge</div>
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-label">Final Score</div>
+        <div class="modal-stat-value" id="modal-score">0 / 15</div>
+      </div>
+    </div>
+    <div class="modal-btn-row">
+      <button class="btn btn-primary" id="modal-restart">↺ Start Over</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ──────────────────────────────────────────────────────────
+   QUESTION DATA
+   Each question has:
+     english     -> the English sentence shown to the student
+     spanish     -> the accepted Spanish translation, checked after
+                    forgiving normalization. Only ONE accepted form
+                    is given per question (matching the English word
+                    order exactly) so that a student can't mask
+                    confusion between two infinitives/activities by
+                    typing them in the wrong order — this is a direct
+                    translation exercise, not a word-order puzzle.
+     maxAttempts -> 3 for every question (1–15)
+   Questions 13–15 are intentionally harder and always appear
+   last, after questions 1–12 (which get shuffled).
+   ────────────────────────────────────────────────────────── */
+const QUESTIONS = [
+  { english: "I like to swim",
+    spanish: ["Me gusta nadar"], maxAttempts: 3 },
+
+  { english: "I don't like to run",
+    spanish: ["No me gusta correr"], maxAttempts: 3 },
+
+  { english: "Do you like to dance?",
+    spanish: ["¿Te gusta bailar?"], maxAttempts: 3 },
+
+  { english: "Do you like to listen to music?",
+    spanish: ["¿Te gusta escuchar música?"], maxAttempts: 3 },
+
+  { english: "I like to draw",
+    spanish: ["Me gusta dibujar"], maxAttempts: 3 },
+
+  { english: "Do you like to play video games?",
+    spanish: ["¿Te gusta jugar videojuegos?"], maxAttempts: 3 },
+
+  { english: "I like to ride a bicycle",
+    spanish: ["Me gusta montar en bicicleta"], maxAttempts: 3 },
+
+  { english: "Do you like to read magazines?",
+    spanish: ["¿Te gusta leer revistas?"], maxAttempts: 3 },
+
+  { english: "I like to spend time with friends",
+    spanish: ["Me gusta pasar tiempo con amigos"], maxAttempts: 3 },
+
+  { english: "Do you like to write stories?",
+    spanish: ["¿Te gusta escribir cuentos?"], maxAttempts: 3 },
+
+  { english: "Do you like to ski?",
+    spanish: ["¿Te gusta esquiar?"], maxAttempts: 3 },
+
+  { english: "I don't like to work",
+    spanish: ["No me gusta trabajar"], maxAttempts: 3 },
+
+  // ── Harder questions (13–15): always last, 3 attempts each.
+  // Each accepts only the word order matching the English prompt. ──
+  { english: "I like to draw and write stories",
+    spanish: ["Me gusta dibujar y escribir cuentos"], maxAttempts: 3 },
+
+  { english: "I don't like either running or swimming",
+    spanish: ["No me gusta ni correr ni nadar"], maxAttempts: 3 },
+
+  { english: "What do you like more, singing or dancing?",
+    spanish: ["¿Qué te gusta más, cantar o bailar?"], maxAttempts: 3 }
+];
+
+const EASY_COUNT = 12; // questions[0..11] get shuffled; the rest (12,13,14) stay last, in order
+const SPECIAL_CHARS = ["á","é","í","ó","ú","ü","ñ","¿","¡"];
+
+/* ── STATE ── */
+let order             = [];    // shuffled array of indices into QUESTIONS, defines play order
+let currentPos        = 0;     // position within "order" (0-14)
+let score              = 0;
+let attemptsRemaining  = 0;    // attempts left on the current question
+let locked             = false; // true once question is solved or attempts are exhausted
+
+/* ── ELEMENT REFERENCES ── */
+const promptText    = document.getElementById('prompt-text');
+const answerInput   = document.getElementById('answer-input');
+const charBank       = document.getElementById('char-bank');
+const feedbackEl     = document.getElementById('feedback');
+const statQuestion   = document.getElementById('stat-question');
+const statScore      = document.getElementById('stat-score');
+const statAttempts   = document.getElementById('stat-attempts');
+const btnCheck       = document.getElementById('btn-check');
+const btnTryAgain    = document.getElementById('btn-tryagain');
+const btnNext        = document.getElementById('btn-next');
+const modal          = document.getElementById('modal');
+const progressFill   = document.getElementById('progress-fill');
+const progressLabel  = document.getElementById('progress-label');
+
+/* ── FISHER-YATES SHUFFLE ── */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ── BUILD A FRESH PLAY ORDER ──
+   Shuffles questions 1–12, then appends 13–15 (in original
+   order) so the three harder questions always come last. */
+function buildOrder() {
+  const easyIdx = shuffle(Array.from({ length: EASY_COUNT }, (_, i) => i));
+  const hardIdx = Array.from({ length: QUESTIONS.length - EASY_COUNT }, (_, i) => EASY_COUNT + i);
+  return easyIdx.concat(hardIdx);
+}
+
+/* ── NORMALIZE AN ANSWER FOR FORGIVING COMPARISON ──
+   Lowercases, trims, strips periods/commas, and collapses
+   repeated spaces — but keeps accents and question marks
+   exactly as typed, since those can change correctness. */
+function normalize(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[.,]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+/* ── BUILD THE SPECIAL CHARACTER BUTTONS (created once) ── */
+function buildCharBank() {
+  SPECIAL_CHARS.forEach(ch => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'char-btn';
+    btn.textContent = ch;
+    // Prevent the input from losing focus/selection when the
+    // button is pressed, so we know where to insert the character
+    btn.addEventListener('mousedown', e => e.preventDefault());
+    btn.addEventListener('click', () => insertChar(ch));
+    charBank.appendChild(btn);
+  });
+}
+
+/* ── INSERT A CHARACTER AT THE CURRENT CURSOR POSITION ── */
+function insertChar(ch) {
+  if (locked) return;
+  const start = answerInput.selectionStart ?? answerInput.value.length;
+  const end   = answerInput.selectionEnd   ?? answerInput.value.length;
+  const val   = answerInput.value;
+  answerInput.value = val.slice(0, start) + ch + val.slice(end);
+  const newPos = start + ch.length;
+  answerInput.focus();
+  answerInput.setSelectionRange(newPos, newPos);
+  hideFeedback();
+}
+
+/* ── LOAD THE QUESTION AT THE GIVEN POSITION IN "order" ── */
+function loadQuestion(pos) {
+  const q = QUESTIONS[order[pos]];
+
+  promptText.textContent = q.english;
+  answerInput.value      = '';
+  answerInput.disabled   = false;
+  attemptsRemaining       = q.maxAttempts;
+  locked                  = false;
+
+  hideFeedback();
+  btnCheck.disabled    = false;
+  btnTryAgain.disabled = false;
+  btnNext.disabled     = true;
+
+  updateStats();
+  updateProgress();
+  answerInput.focus();
+}
+
+/* ── UPDATE THE PROGRESS BAR ──
+   Fills based on how many questions have already been passed
+   (currentPos), so it animates smoothly toward 100% as the
+   student advances. The CSS transition on .progress-fill does
+   the actual animating; this just sets the target width. */
+function updateProgress() {
+  const total   = QUESTIONS.length;
+  const percent = Math.round((currentPos / total) * 100);
+  progressFill.style.width = percent + '%';
+  progressLabel.textContent = `Question ${currentPos + 1} of ${total}`;
+}
+
+/* ── UPDATE THE STATS BAR ── */
+function updateStats() {
+  statQuestion.textContent = `${currentPos + 1} / ${QUESTIONS.length}`;
+  statScore.textContent    = `${score} / ${QUESTIONS.length}`;
+  statAttempts.textContent = attemptsRemaining;
+}
+
+/* ── FEEDBACK HELPERS ── */
+function showFeedback(type, html) {
+  feedbackEl.className = `feedback show ${type}`;
+  feedbackEl.innerHTML = html;
+}
+function hideFeedback() {
+  feedbackEl.className = 'feedback';
+  feedbackEl.innerHTML = '';
+}
+
+/* ── CHECK ANSWER BUTTON ── */
+btnCheck.addEventListener('click', () => {
+  if (locked) return;
+
+  const typed    = normalize(answerInput.value);
+  const question = QUESTIONS[order[currentPos]];
+  const isCorrect = question.spanish.some(a => normalize(a) === typed);
+
+  if (isCorrect) {
+    score++;
+    locked = true;
+    answerInput.disabled = true;
+    updateStats();
+    showFeedback('correct', '<span class="feedback-check">&#10003;</span> ¡Excelente!');
+    btnCheck.disabled    = true;
+    btnTryAgain.disabled = true;
+    btnNext.disabled     = false;
+    return;
+  }
+
+  // Incorrect — use up one attempt
+  attemptsRemaining--;
+  updateStats();
+
+  if (attemptsRemaining <= 0) {
+    // Out of attempts: reveal the correct answer and let them continue
+    locked = true;
+    answerInput.disabled = true;
+    const correctText = question.spanish.join(' &nbsp;or&nbsp; ');
+    const isHard = question.maxAttempts === 5;
+    const note = isHard
+      ? ''
+      : '<div class="model-answer-note">Take a moment to study this pattern before moving on</div>';
+    showFeedback('reveal',
+      `<div class="model-answer-heading">&#10003; Model Answer</div>` +
+      `<div class="model-answer-text"><strong>${correctText}</strong></div>` +
+      note
+    );
+    btnCheck.disabled    = true;
+    btnTryAgain.disabled = true;
+    btnNext.disabled     = false;
+  } else {
+    showFeedback('tryagain',
+      `<div class="not-quite-heading">&#10007; Not Quite</div>` +
+      `<div class="not-quite-text">${attemptsRemaining} attempt${attemptsRemaining === 1 ? '' : 's'} remaining</div>`
+    );
+  }
+});
+
+/* ── TRY AGAIN BUTTON: clears the answer box without using an attempt ── */
+btnTryAgain.addEventListener('click', () => {
+  if (locked) return;
+  answerInput.value = '';
+  hideFeedback();
+  answerInput.focus();
+});
+
+/* ── Clear stale feedback as soon as the student edits their answer ── */
+answerInput.addEventListener('input', () => {
+  if (!locked) hideFeedback();
+});
+
+/* ── NEXT QUESTION BUTTON ── */
+btnNext.addEventListener('click', () => {
+  currentPos++;
+  if (currentPos >= order.length) {
+    showCompletion();
+  } else {
+    loadQuestion(currentPos);
+  }
+});
+
+/* ── COMPLETION MODAL ── */
+function showCompletion() {
+  document.getElementById('modal-score').textContent = `${score} / ${QUESTIONS.length}`;
+  progressFill.style.width = '100%';
+  progressLabel.textContent = `All ${QUESTIONS.length} questions complete`;
+  modal.classList.add('visible');
+}
+function hideCompletion() {
+  modal.classList.remove('visible');
+}
+
+document.getElementById('modal-restart').addEventListener('click', () => {
+  hideCompletion();
+  startActivity();
+});
+
+/* ── START / RESTART THE ACTIVITY ── */
+function startActivity() {
+  order       = buildOrder();
+  currentPos  = 0;
+  score       = 0;
+  loadQuestion(currentPos);
+}
+
+/* ── INITIAL SETUP ── */
+buildCharBank();
+startActivity();
+</script>
+
+<footer style="max-width:720px;margin:32px auto 0;padding:14px 16px 0;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:0.68rem;line-height:1.5;color:#8a9a82;border-top:1px solid #e8fbe2;">
+  &copy; 2026 GMKTutoring. All Rights Reserved.<br>
+  <strong>Single Teacher License</strong><br>
+  This resource is licensed for use by one teacher. Students of the purchasing teacher may access and use this resource for classroom instruction.<br>
+  Sharing, redistribution, resale, posting online, or providing access to non-enrolled students is prohibited.
+</footer>
+</body>
+</html>
